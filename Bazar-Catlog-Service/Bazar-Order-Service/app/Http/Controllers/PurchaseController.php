@@ -11,8 +11,16 @@ use Carbon\Carbon;
 
 class PurchaseController
 {
+    /**
+     * Catalog service base URL
+     * 
+     * @var string
+     */
     private $catalogServiceUrl;
 
+    /**
+     * Initialize the controller with catalog service URL
+     */
     public function __construct()
     {
         $this->catalogServiceUrl = env('CATALOG_SERVICE_URL', 'http://catalog-service:8080');
