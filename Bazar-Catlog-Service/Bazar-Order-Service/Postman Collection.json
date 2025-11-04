@@ -1,0 +1,143 @@
+{
+	"info": {
+		"_postman_id": "bazar-order-service",
+		"name": "Bazar Order Service",
+		"description": "API collection for testing Bazar Order Service endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						""
+					]
+				},
+				"description": "Check if the order service is running"
+			},
+			"response": []
+		},
+		{
+			"name": "Purchase Book ID 1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/purchase/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"purchase",
+						"1"
+					]
+				},
+				"description": "Purchase book with ID 1"
+			},
+			"response": []
+		},
+		{
+			"name": "Purchase Book ID 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/purchase/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"purchase",
+						"2"
+					]
+				},
+				"description": "Purchase book with ID 2"
+			},
+			"response": []
+		},
+		{
+			"name": "Purchase Book ID 3",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/purchase/3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"purchase",
+						"3"
+					]
+				},
+				"description": "Purchase book with ID 3"
+			},
+			"response": []
+		},
+		{
+			"name": "Purchase Book ID 4",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/purchase/4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"purchase",
+						"4"
+					]
+				},
+				"description": "Purchase book with ID 4"
+			},
+			"response": []
+		},
+		{
+			"name": "Purchase Invalid Book ID",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/purchase/999",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"purchase",
+						"999"
+					]
+				},
+				"description": "Test with invalid book ID (should return 404)"
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5001",
+			"type": "string"
+		}
+	]
+}
+
