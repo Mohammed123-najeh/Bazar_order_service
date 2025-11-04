@@ -110,6 +110,7 @@ class PurchaseController
             $order->status = 'Completed';
             $order->save();
 
+            // Log successful purchase
             Log::info("bought book {$bookName}");
             echo "bought book {$bookName}\n";
             
