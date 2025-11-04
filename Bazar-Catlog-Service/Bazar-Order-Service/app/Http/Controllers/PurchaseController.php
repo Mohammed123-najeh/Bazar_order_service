@@ -39,7 +39,10 @@ class PurchaseController
             $client = new Client();
             
             // Step 1: Query catalog service to get book info
-            $infoResponse = $client->get("{$this->catalogServiceUrl}/books/info/{$itemNumber}");
+            $infoResponse = $client->get(
+                "{$this->catalogServiceUrl}/books/info/{$itemNumber}",
+                ['timeout' => 10]
+            );
             
             if ($infoResponse->getStatusCode() !== 200) {
                 $this->logFailedOrder($itemNumber, "Book with ID {$itemNumber} not found in catalog");
