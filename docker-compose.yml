@@ -1,0 +1,108 @@
+services:
+  gateway:
+    build:
+      context: ./Bazar-Gateway-Service
+      dockerfile: Dockerfile
+    container_name: gateway-service
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - CATALOG_SERVICE_URLS=http://catalog-service-1:8080,http://catalog-service-2:8080
+      - ORDER_SERVICE_URLS=http://order-service-1:8080,http://order-service-2:8080
+    networks:
+      - bazar-network
+    depends_on:
+      - catalog-service-1
+      - catalog-service-2
+      - order-service-1
+      - order-service-2
+
+  catalog-service-1:
+    build:
+      context: ./Bazar-Catlog-Service
+      dockerfile: Dockerfile
+    container_name: catalog-service-1
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Data Source=Bazar.db
+      - REPLICA_URLS=http://catalog-service-2:8080
+      - GATEWAY_URL=http://gateway-service:3000
+    volumes:
+      - catalog-db-1:/app
+    networks:
+      - bazar-network
+
+  catalog-service-2:
+    build:
+      context: ./Bazar-Catlog-Service
+      dockerfile: Dockerfile
+    container_name: catalog-service-2
+    ports:
+      - "5002:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Data Source=Bazar.db
+      - REPLICA_URLS=http://catalog-service-1:8080
+      - GATEWAY_URL=http://gateway-service:3000
+    volumes:
+      - catalog-db-2:/app
+    networks:
+      - bazar-network
+
+  order-service-1:
+    build:
+      context: ./Bazar-Order-Service
+      dockerfile: Dockerfile
+    container_name: order-service-1
+    ports:
+      - "5001:8080"
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=true
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/app/orders.db
+      - CATALOG_SERVICE_URL=http://catalog-service-1:8080
+      - REPLICA_URLS=http://order-service-2:8080
+    volumes:
+      - order-db-1:/app
+    networks:
+      - bazar-network
+    depends_on:
+      - catalog-service-1
+      - catalog-service-2
+
+  order-service-2:
+    build:
+      context: ./Bazar-Order-Service
+      dockerfile: Dockerfile
+    container_name: order-service-2
+    ports:
+      - "5003:8080"
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=true
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/app/orders.db
+      - CATALOG_SERVICE_URL=http://catalog-service-1:8080
+      - REPLICA_URLS=http://order-service-1:8080
+    volumes:
+      - order-db-2:/app
+    networks:
+      - bazar-network
+    depends_on:
+      - catalog-service-1
+      - catalog-service-2
+
+volumes:
+  catalog-db-1:
+  catalog-db-2:
+  order-db-1:
+  order-db-2:
+
+networks:
+  bazar-network:
+    driver: bridge
+
