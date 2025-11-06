@@ -6,3 +6,5 @@ $router->get('/', function () {
 
 // Before replication: only a single purchase endpoint
 $router->post('/purchase/{itemNumber}', 'PurchaseController@purchase');
+// replication endpoint here
+
