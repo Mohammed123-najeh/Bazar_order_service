@@ -139,4 +139,5 @@ class PurchaseController
             Log::error("Failed to log failed order: {$e->getMessage()}");
         }
     }
-}
+}// NOTE: this is the part 1 version of the purchase flow
+
