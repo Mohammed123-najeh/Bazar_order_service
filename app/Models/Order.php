@@ -17,3 +17,4 @@ class Order extends Model
 
     public $timestamps = false;
 }
+\n    // simple order model for lab\n
