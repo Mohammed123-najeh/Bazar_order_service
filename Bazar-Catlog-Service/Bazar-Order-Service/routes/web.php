@@ -1,7 +1,5 @@
 <?php
 
-/** @var \Laravel\Lumen\Routing\Router $router */
-
 $router->get('/', function () {
     return 'Order Service is running!';
 });

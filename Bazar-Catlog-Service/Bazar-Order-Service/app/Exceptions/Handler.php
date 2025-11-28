@@ -25,7 +25,6 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $exception)
     {
-        // Enable detailed error messages for debugging
         if (env('APP_DEBUG', false)) {
             return response()->json([
                 'message' => $exception->getMessage(),

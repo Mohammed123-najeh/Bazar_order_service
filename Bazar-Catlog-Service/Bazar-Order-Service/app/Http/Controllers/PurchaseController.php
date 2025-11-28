@@ -11,34 +11,18 @@ use Carbon\Carbon;
 
 class PurchaseController
 {
-    /**
-     * Catalog service base URL
-     * 
-     * @var string
-     */
     private $catalogServiceUrl;
 
-    /**
-     * Initialize the controller with catalog service URL
-     */
     public function __construct()
     {
         $this->catalogServiceUrl = env('CATALOG_SERVICE_URL', 'http://catalog-service:8080');
     }
 
-    /**
-     * Purchase a book by item number
-     *
-     * @param Request $request
-     * @param int $itemNumber
-     * @return JsonResponse
-     */
     public function purchase(Request $request, int $itemNumber): JsonResponse
     {
         try {
             $client = new Client();
             
-            // Step 1: Query catalog service to get book info
             $infoResponse = $client->get(
                 "{$this->catalogServiceUrl}/books/info/{$itemNumber}",
                 ['timeout' => 10]
@@ -60,11 +44,9 @@ class PurchaseController
                 ], 400);
             }
 
-            // Handle both camelCase and PascalCase property names from C# service
             $numberOfItems = $book['numberOfItems'] ?? $book['NumberOfItems'] ?? 0;
             $bookName = $book['bookName'] ?? $book['BookName'] ?? "Book ID {$itemNumber}";
 
-            // Step 2: Check if book is in stock
             if ($numberOfItems <= 0) {
                 $this->logFailedOrder(
                     $itemNumber,
@@ -79,7 +61,6 @@ class PurchaseController
                 ], 400);
             }
 
-            // Step 3: Decrement stock in catalog service
             $decreaseStock = ['decrease' => 1];
             
             $updateResponse = $client->patch(
@@ -105,7 +86,6 @@ class PurchaseController
                 ], 400);
             }
 
-            // Step 4: Create order record
             $order = new Order();
             $order->book_id = $itemNumber;
             $order->book_name = $bookName;
@@ -113,7 +93,6 @@ class PurchaseController
             $order->status = 'Completed';
             $order->save();
 
-            // Log successful purchase
             Log::info("bought book {$bookName}");
             echo "bought book {$bookName}\n";
             
@@ -144,14 +123,6 @@ class PurchaseController
         }
     }
 
-    /**
-     * Log a failed order to the database
-     *
-     * @param int $itemNumber
-     * @param string $reason
-     * @param string|null $bookName
-     * @return void
-     */
     private function logFailedOrder(int $itemNumber, string $reason, ?string $bookName = null): void
     {
         try {
