@@ -49,3 +49,4 @@ class ReplicationService
 }
 
 
+\n    // replication helper used in part 2 of the lab\n
