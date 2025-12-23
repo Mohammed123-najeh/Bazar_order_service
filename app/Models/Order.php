@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    protected $table = 'orders';
+    
+    public $timestamps = false;
+
     protected $fillable = [
         'book_id',
         'book_name',
@@ -13,8 +17,8 @@ class Order extends Model
         'status'
     ];
 
-    protected $dates = ['order_date'];
-
-    public $timestamps = false;
+    protected $casts = [
+        'order_date' => 'datetime'
+    ];
 }
-\n    // simple order model for lab\n
+

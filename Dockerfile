@@ -1,32 +1,44 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.2-cli-alpine
 
-WORKDIR /app
-
-# Install system dependencies and PHP extensions
+# Install system dependencies
 RUN apk add --no-cache \
     git \
     curl \
     libpng-dev \
-    libzip-dev \
+    oniguruma-dev \
+    libxml2-dev \
+    zip \
+    unzip \
     sqlite \
-    && docker-php-ext-install pdo pdo_sqlite zip
+    sqlite-dev
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo_sqlite mbstring
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy composer files and install dependencies
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy composer files
 COPY composer.json composer.lock* ./
-RUN composer install --no-dev --optimize-autoloader
+
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Copy application files
 COPY . .
 
+# Create database directory and file
+RUN mkdir -p /app && touch /app/orders.db && chmod 777 /app/orders.db
+
 # Set permissions
-RUN chown -R www-data:www-data /app \
-    && chmod -R 755 /app/storage
+RUN chmod -R 777 /var/www/html && chmod -R 777 /app
 
 # Expose port
 EXPOSE 8080
 
-# Use PHP built-in server for development/production
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "public"]
+# Run migrations and start server
+CMD sh -c "php artisan migrate --force || true && php -S 0.0.0.0:8080 -t public public/index.php"
+
